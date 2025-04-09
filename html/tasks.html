@@ -90,6 +90,30 @@
       </form>
     </div>
   </section>
+<!-- ✅ Filter & Sort Controls -->
+<div class="container mt-4">
+  <div class="row g-2">
+    <div class="col-md-4">
+      <input type="text" id="filterKeyword" class="form-control" placeholder="Search mission name..." oninput="updateMissionList()">
+    </div>
+    <div class="col-md-4">
+      <select id="filterPriority" class="form-select" onchange="updateMissionList()">
+        <option value="">Filter by Priority</option>
+        <option value="High">🔥 High</option>
+        <option value="Medium">⚡ Medium</option>
+        <option value="Low">💡 Low</option>
+      </select>
+    </div>
+    <div class="col-md-4">
+      <select id="sortBy" class="form-select" onchange="updateMissionList()">
+        <option value="">Sort by</option>
+        <option value="name">Name</option>
+        <option value="date">Due Date</option>
+        <option value="priority">Priority</option>
+      </select>
+    </div>
+  </div>
+</div>
 
   <!-- ✅ MISSION TABLE -->
   <section class="container mt-5">

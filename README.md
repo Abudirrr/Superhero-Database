@@ -13,7 +13,8 @@ Welcome to **Control Freak’s Superhero Database**, a fun and interactive super
 ## 🚀 Live Demo
 
 **GitHub Pages Link:**  
-[👉 View Live](https://your-username.github.io/your-repo-name/)
+[👉 View Live]([👉 View Live](https://abudirrr.github.io/Superhero-Database/)
+)
 
 ---
 
