@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Website - Home</title>
+
+  <!-- Bootstrap & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="../css/style.css">
+
+  <!-- jQuery (needed to load header) -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body class="bg-light text-dark">
+
+  <!-- 🔄 Load Header -->
+  <div id="header-placeholder"></div>
+
+  <!-- ✅ Main Page Content -->
+  <div class="container text-center mt-4">
+    <h1 class="display-3 text-primary fw-bold">FEAR NOT, CITIZENS! HOPE HAS ARRIVED!</h1>
+    <h2 class="text-secondary">Because I Am Here!</h2>
+    <img class="img-fluid rounded shadow-lg img-animate" src="../images/spawn.jpeg" alt="Spawn" width="500">
+  </div>
+
+  <div class="container mt-5">
+    <h2 class="text-center text-primary">Heroes</h2>
+    <ol class="list-group list-group-numbered">
+      <li class="list-group-item">Heman
+        <ul>
+          <li>Strongest Man in the Universe</li>
+          <li>Prince of Eternia</li>
+          <li>Skeletor's Nemesis</li>
+        </ul>
+      </li>
+      <li class="list-group-item">All Might
+        <ul>
+          <li>9th User of One for All</li>
+          <li>Fear not</li>
+          <li>United States Smash</li>
+        </ul>
+      </li>
+      <li class="list-group-item">Spawn</li>
+      <li class="list-group-item">The Batman That Laughs</li>
+    </ol>
+  </div>
+
+  <div class="container mt-5">
+    <h3 class="text-primary">User Login</h3>
+    <form class="p-4 border rounded bg-white shadow">
+      <div class="mb-3">
+        <label for="username" class="form-label">User:</label>
+        <input type="text" id="username" class="form-control" name="username">
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Pass:</label>
+        <input type="password" id="password" class="form-control" name="password">
+      </div>
+      <h4 class="text-primary">Who is Worthy:</h4>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="Heroes" id="heman">
+        <label class="form-check-label" for="heman">Heman</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="Heroes" id="allmight">
+        <label class="form-check-label" for="allmight">All Might</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="Heroes" id="spawn">
+        <label class="form-check-label" for="spawn">Spawn</label>
+      </div>
+      <button type="submit" class="btn btn-primary mt-3 hover-effect">Submit</button>
+    </form>
+  </div>
+
+  <div class="container mt-5 mb-5">
+    <h3 class="text-center text-primary">Which Dragon Ball Character Farms the Most Aura?</h3>
+    <div class="row text-center">
+      <div class="col-md-4">
+        <h4>Piccolo</h4>
+        <img src="../images/piccolo.jpg" class="img-fluid rounded shadow img-animate" alt="Piccolo">
+      </div>
+      <div class="col-md-4">
+        <h4>Vegeta</h4>
+        <img src="../images/vegeta.jpeg" class="img-fluid rounded shadow img-animate" alt="Vegeta">
+      </div>
+      <div class="col-md-4">
+        <h4>Goku</h4>
+        <img src="../images/goku.jpg" class="img-fluid rounded shadow img-animate" alt="Goku">
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ Scripts -->
+  <script src="../javascript/darkMode.js"></script>
+  <script src="../javascript/script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- 🔄 Load Footer -->
+<div id="footer-placeholder" role="contentinfo"></div>
+
+<!-- ✅ Load Header + Footer + Dark Mode -->
+<script>
+  $(function () {
+    // Load Header
+    $('#header-placeholder').load('header.html', function (response, status, xhr) {
+      if (status === "error") {
+        console.error("Failed to load header.html:", xhr.status, xhr.statusText);
+      }
+    });
+
+    // Load Footer
+    $('#footer-placeholder').load('footer.html', function (response, status, xhr) {
+      if (status === "error") {
+        console.error("Failed to load footer.html:", xhr.status, xhr.statusText);
+      } else {
+        // Apply saved dark mode setting
+        if (localStorage.getItem('darkMode') === 'enabled') {
+          $('body').addClass('dark-mode');
+          $('#darkModeToggle').prop('checked', true);
+        }
+
+        // Toggle dark mode
+        $(document).on('change', '#darkModeToggle', function () {
+          $('body').toggleClass('dark-mode');
+          localStorage.setItem('darkMode', this.checked ? 'enabled' : 'disabled');
+        });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
