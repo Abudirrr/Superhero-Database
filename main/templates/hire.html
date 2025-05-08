@@ -1,0 +1,100 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hire a Hero</title>
+
+  <!-- Bootstrap & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{% static 'styles.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+</head>
+
+<body class="bg-light text-dark">
+
+  <!-- ✅ Header -->
+  {% include 'header.html' %}
+
+  <!-- ✅ Main Title -->
+  <div class="container mt-5 text-center">
+    <h1 class="text-warning fw-bold">Hire a Hero</h1>
+    <p class="lead">Choose your champion and conquer your mission.</p>
+  </div>
+
+  <!-- ✅ Search + Filters -->
+  <div class="container mt-4">
+    <form method="get" class="row g-3 align-items-end">
+      <div class="col-md-3">
+        <input type="text" name="q" class="form-control" placeholder="Search heroes..." value="{{ query }}">
+      </div>
+      <div class="col-md-2">
+        <select name="category" class="form-select">
+          <option value="">All Categories</option>
+          {% for cat in categories %}
+            <option value="{{ cat.id }}" {% if category_id == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <input type="number" name="min_price" class="form-control" placeholder="Min Price" value="{{ min_price }}">
+      </div>
+      <div class="col-md-2">
+        <input type="number" name="max_price" class="form-control" placeholder="Max Price" value="{{ max_price }}">
+      </div>
+      <div class="col-md-2">
+        <input type="number" name="power_level" class="form-control" placeholder="Min Power Level" value="{{ power_level }}">
+      </div>
+      <div class="col-md-1">
+        <button type="submit" class="btn btn-primary w-100">Filter</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- ✅ Hero Cards -->
+  <div class="container mt-5">
+    <div class="row">
+      {% for hero in page_obj %}
+        <div class="col-md-4 mb-4">
+          <div class="card h-100 shadow-sm">
+            {% if hero.image %}
+              <img src="{{ hero.image.url }}" class="card-img-top" alt="{{ hero.name }}">
+            {% else %}
+              <img src="{% static 'images/default_hero.jpg' %}" class="card-img-top" alt="Default Hero">
+            {% endif %}
+            <div class="card-body">
+              <h5 class="card-title">{{ hero.name }}</h5>
+              <p class="card-text">{{ hero.description|truncatechars:120 }}</p>
+              {% if hero.category %}
+                <span class="badge bg-secondary">{{ hero.category.name }}</span>
+              {% endif %}
+              <p class="mt-2"><strong>Price:</strong> ${{ hero.price }}</p>
+              <p><strong>Power:</strong> {{ hero.power_level }}</p>
+              <div class="mt-3 d-flex justify-content-between">
+                <a href="{% url 'hire_hero' hero.id %}" class="btn btn-success btn-sm">Hire</a>
+                <a href="{% url 'hero_detail' hero.id %}" class="btn btn-outline-primary btn-sm">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% empty %}
+        <div class="col-12">
+          <p class="text-center text-muted mt-5">🕵️ No heroes found. Try adjusting your filters.</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- ✅ Footer -->
+  {% include 'footer.html' %}
+
+  <!-- ✅ Scripts -->
+  <script src="{% static 'javascript/darkMode.js' %}"></script>
+  <script src="{% static 'javascript/script.js' %}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

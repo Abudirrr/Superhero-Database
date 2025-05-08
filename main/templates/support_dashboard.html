@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Support Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Support Dashboard</h2>
+
+    <!-- ✅ Message Form -->
+    <form method="post" class="mb-4">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="messageContent">Send a message:</label>
+            <textarea name="content" id="messageContent" class="form-control" rows="3" placeholder="Enter your message..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">Send</button>
+    </form>
+
+    <!-- ✅ Feedback Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- ✅ List of All Messages -->
+    <h4>All Messages</h4>
+    {% if messages_list %}
+        <ul class="list-group">
+            {% for msg in messages_list %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>{{ msg.sender.username }}</strong>: {{ msg.content }}<br>
+                        <small class="text-muted">{{ msg.timestamp|date:"M d, Y H:i" }}</small>
+                    </div>
+                    {% if request.user == msg.sender or request.user.is_staff %}
+                        <form method="post" action="{% url 'delete_message' msg.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-muted">No messages yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

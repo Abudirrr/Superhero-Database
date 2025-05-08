@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Cart | Hire a Hero</title>
+
+  <!-- Bootstrap & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{% static 'styles.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+</head>
+<body class="bg-light text-dark">
+
+  <!-- ✅ Header -->
+  {% include 'header.html' %}
+
+  <!-- ✅ Main Content -->
+  <div class="container mt-5">
+    <h1 class="text-center text-primary fw-bold">🛒 Your Cart</h1>
+    <p class="text-center text-muted">These are the heroes you've selected to hire.</p>
+
+    {% if cart_items %}
+      <div class="table-responsive mt-4">
+        <table class="table table-bordered table-hover shadow bg-white">
+          <thead class="table-dark text-center">
+            <tr>
+              <th scope="col">Hero</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in cart_items %}
+              <tr class="align-middle text-center">
+                <td>
+                  {% if item.hero.image %}
+                    <img src="{{ item.hero.image.url }}" class="rounded me-2" width="40" height="40" alt="{{ item.hero.name }}">
+                  {% endif %}
+                  <strong>{{ item.hero.name }}</strong>
+                </td>
+                <td>{{ item.quantity }}</td>
+                <td>
+                  <a href="{% url 'remove_from_cart' item.id %}" class="btn btn-danger btn-sm">
+                    <i class="bi bi-trash"></i> Remove
+                  </a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="text-center mt-4">
+        <a href="{% url 'hire' %}" class="btn btn-success me-2">
+          <i class="bi bi-plus-circle"></i> Add More Heroes
+        </a>
+        <a href="{% url 'client_dashboard' %}" class="btn btn-primary">
+          <i class="bi bi-check-circle"></i> Finalize & Continue
+        </a>
+      </div>
+    {% else %}
+      <div class="alert alert-info text-center shadow mt-5">
+        <h4 class="mb-3">Your cart is currently empty.</h4>
+        <a href="{% url 'hire' %}" class="btn btn-outline-primary">
+          <i class="bi bi-search"></i> Hire a Hero
+        </a>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- ✅ Footer -->
+  {% include 'footer.html' %}
+
+  <!-- ✅ Scripts -->
+  <script src="{% static 'javascript/darkMode.js' %}"></script>
+  <script src="{% static 'javascript/script.js' %}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
