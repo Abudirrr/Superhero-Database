@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+import dj_database_url
 
 # ✅ Base Directory
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -7,14 +8,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ✅ Secret key (from environment for security)
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-x4+3489_%#z((6vcy_f(v%(kq(zgl%%6vd+6g9y&w3m5lep2_v")
 
-# ✅ Detect Render deployment
-RENDER = os.environ.get("RENDER", "") == "true"
+# ✅ Debug mode (False by default in production)
+DEBUG = os.getenv("DEBUG", "0") == "1"
 
-# ✅ Debug mode (True locally, False on Render)
-DEBUG = not RENDER  # Optional: use env var if needed
-
-# ✅ Allowed Hosts
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.onrender.com']
+# ✅ Allowed Hosts (from Railway or manually set)
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+RAILWAY_HOSTNAME = os.getenv("RAILWAY_STATIC_URL")
+if RAILWAY_HOSTNAME:
+    ALLOWED_HOSTS.append(RAILWAY_HOSTNAME.replace("https://", ""))
 
 # ✅ Installed Applications
 INSTALLED_APPS = [
@@ -30,7 +31,7 @@ INSTALLED_APPS = [
 # ✅ Middleware
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",  # ✅ Serves static files in prod
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -60,14 +61,13 @@ TEMPLATES = [
     },
 ]
 
-# ✅ SQLite Database (fine for development and Render demo)
+# ✅ Database (PostgreSQL on Railway)
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-    # To use PostgreSQL on Render:
-    # "default": dj_database_url.config(conn_max_age=600)
+    "default": dj_database_url.config(
+        default=os.getenv("DATABASE_URL"),
+        conn_max_age=600,
+        ssl_require=True
+    )
 }
 
 # ✅ Password Validation
@@ -90,15 +90,22 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "main", "static")]
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-# ✅ Media Files (user-uploaded images like hero photos)
+# ✅ Media Files (for hero image uploads)
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-# ✅ Primary key field type
+# ✅ Default primary key field
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# ✅ Login Redirects
+# ✅ Login Redirect
 LOGIN_URL = "/login/"
 
-# ✅ CSRF Custom Handler
+# ✅ CSRF Settings (Important for Railway)
+CSRF_TRUSTED_ORIGINS = [
+    "https://" + host for host in ALLOWED_HOSTS if "." in host
+]
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+# ✅ Optional Custom CSRF failure page
 CSRF_FAILURE_VIEW = "main.views.error_views.custom_csrf_failure"
