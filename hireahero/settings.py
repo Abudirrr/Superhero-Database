@@ -108,7 +108,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # ✅ Authentication
 LOGIN_URL = "/login/"
 
-# ✅ CSRF / Session Security
+# ✅ CSRF / Session Security (relaxed for DEBUG)
 CSRF_TRUSTED_ORIGINS = [
     "https://" + host for host in ALLOWED_HOSTS if "." in host
 ]
