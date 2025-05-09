@@ -5,11 +5,11 @@ import dj_database_url
 # ✅ Base Directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# ✅ Secret Key (override in environment for production)
+# ✅ Secret Key (use environment in production)
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-x4+3489_%#z((6vcy_f(v%(kq(zgl%%6vd+6g9y&w3m5lep2_v")
 
-# ✅ Debug Toggle via ENV
-DEBUG = os.getenv("DEBUG", "0") == "1"
+# ✅ Debug Mode ENABLED
+DEBUG = True
 
 # ✅ Allowed Hosts including Railway
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
@@ -102,7 +102,7 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-# ✅ Default PK
+# ✅ Default Primary Key Field Type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # ✅ Authentication
@@ -112,8 +112,8 @@ LOGIN_URL = "/login/"
 CSRF_TRUSTED_ORIGINS = [
     "https://" + host for host in ALLOWED_HOSTS if "." in host
 ]
-CSRF_COOKIE_SECURE = not DEBUG
-SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
 
-# ✅ Optional CSRF failure page (can remove if unused)
+# ✅ Optional CSRF failure view
 CSRF_FAILURE_VIEW = "main.views.error_views.custom_csrf_failure"
