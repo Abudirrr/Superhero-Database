@@ -29,6 +29,9 @@ from main.views.rate_views import rate_hero
 # ✅ Static and extra pages
 from main.views.static_views import about_page, contact_page, match_game
 
+# ✅ Migration trigger view
+from main.views.utils import trigger_migrations
+
 urlpatterns = [
     # ========================
     # Main Pages & Authentication
@@ -74,6 +77,11 @@ urlpatterns = [
     path("game/", match_game, name="game"),
     path("about/", about_page, name="about"),
     path("contact/", contact_page, name="contact"),
+
+    # ========================
+    # Utilities
+    # ========================
+    path("run-migrations/", trigger_migrations, name="run_migrations"),
 ]
 
 # ✅ Serve uploaded images from MEDIA_ROOT in development mode only
