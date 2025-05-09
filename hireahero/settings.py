@@ -5,19 +5,19 @@ import dj_database_url
 # ✅ Base Directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# ✅ Secret key (from environment for security)
+# ✅ Secret Key (override in environment for production)
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-x4+3489_%#z((6vcy_f(v%(kq(zgl%%6vd+6g9y&w3m5lep2_v")
 
-# ✅ Debug mode (False by default in production)
+# ✅ Debug Toggle via ENV
 DEBUG = os.getenv("DEBUG", "0") == "1"
 
-# ✅ Allowed Hosts (from Railway or manually set)
+# ✅ Allowed Hosts including Railway
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 RAILWAY_HOSTNAME = os.getenv("RAILWAY_STATIC_URL")
 if RAILWAY_HOSTNAME:
     ALLOWED_HOSTS.append(RAILWAY_HOSTNAME.replace("https://", ""))
 
-# ✅ Installed Applications
+# ✅ Installed Apps
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -40,7 +40,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-# ✅ Root URLs and WSGI
+# ✅ URLs & WSGI
 ROOT_URLCONF = "hireahero.urls"
 WSGI_APPLICATION = "hireahero.wsgi.application"
 
@@ -61,14 +61,22 @@ TEMPLATES = [
     },
 ]
 
-# ✅ Database (PostgreSQL on Railway)
-DATABASES = {
-    "default": dj_database_url.config(
-        default=os.getenv("DATABASE_URL"),
-        conn_max_age=600,
-        ssl_require=True
-    )
-}
+# ✅ Dynamic Database Selection
+if os.getenv("DATABASE_URL"):
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=os.getenv("DATABASE_URL"),
+            conn_max_age=600,
+            ssl_require=True
+        )
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 # ✅ Password Validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -84,28 +92,28 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-# ✅ Static Files (CSS, JS)
+# ✅ Static Files
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "main", "static")]
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-# ✅ Media Files (for hero image uploads)
+# ✅ Media Files
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-# ✅ Default primary key field
+# ✅ Default PK
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# ✅ Login Redirect
+# ✅ Authentication
 LOGIN_URL = "/login/"
 
-# ✅ CSRF Settings (Important for Railway)
+# ✅ CSRF / Session Security
 CSRF_TRUSTED_ORIGINS = [
     "https://" + host for host in ALLOWED_HOSTS if "." in host
 ]
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = not DEBUG
+SESSION_COOKIE_SECURE = not DEBUG
 
-# ✅ Optional Custom CSRF failure page
+# ✅ Optional CSRF failure page (can remove if unused)
 CSRF_FAILURE_VIEW = "main.views.error_views.custom_csrf_failure"
