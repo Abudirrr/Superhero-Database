@@ -11,7 +11,7 @@ SECRET_KEY = "django-insecure-x4+3489_%#z((6vcy_f(v%(kq(zgl%%6vd+6g9y&w3m5lep2_v
 DEBUG = False
 
 # ✅ Hosts allowed to connect
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "superhero-database.onrender.com"]
+ALLOWED_HOSTS = ["superhero-database.onrender.com"]
 
 
 # ✅ Installed apps
