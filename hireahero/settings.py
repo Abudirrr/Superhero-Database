@@ -5,13 +5,13 @@ import dj_database_url
 # ✅ Base Directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# ✅ Secret Key (use environment in production)
+# ✅ Secret Key (override in production)
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-x4+3489_%#z((6vcy_f(v%(kq(zgl%%6vd+6g9y&w3m5lep2_v")
 
-# ✅ Debug Mode ENABLED
+# ✅ Debug Mode ON for Development
 DEBUG = True
 
-# ✅ Allowed Hosts including Railway
+# ✅ Allowed Hosts (add Railway hostname dynamically)
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 RAILWAY_HOSTNAME = os.getenv("RAILWAY_STATIC_URL")
 if RAILWAY_HOSTNAME:
@@ -40,7 +40,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-# ✅ URLs & WSGI
+# ✅ Root URL & WSGI
 ROOT_URLCONF = "hireahero.urls"
 WSGI_APPLICATION = "hireahero.wsgi.application"
 
@@ -61,7 +61,7 @@ TEMPLATES = [
     },
 ]
 
-# ✅ Dynamic Database Selection
+# ✅ Database: PostgreSQL for Railway, SQLite for local
 if os.getenv("DATABASE_URL"):
     DATABASES = {
         "default": dj_database_url.config(
@@ -102,18 +102,18 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-# ✅ Default Primary Key Field Type
+# ✅ Default PK Field
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# ✅ Authentication
+# ✅ Auth Redirects
 LOGIN_URL = "/login/"
 
-# ✅ CSRF / Session Security (relaxed for DEBUG)
+# ✅ CSRF / Session Settings
 CSRF_TRUSTED_ORIGINS = [
     "https://" + host for host in ALLOWED_HOSTS if "." in host
 ]
-CSRF_COOKIE_SECURE = False
-SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False  # Set to True in production!
+SESSION_COOKIE_SECURE = False  # Set to True in production!
 
-# ✅ Optional CSRF failure view
+# ✅ Optional custom CSRF handler
 CSRF_FAILURE_VIEW = "main.views.error_views.custom_csrf_failure"
