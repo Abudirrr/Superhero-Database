@@ -5,17 +5,25 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import Hero, Category, Hire, UserProfile, Message, CartItem, Rating
 
 
-# ✅ Inline UserProfile in User admin (editable + deletable)
+# ✅ Inline UserProfile (and optionally Hero) in User admin
 class UserProfileInline(admin.StackedInline):
     model = UserProfile
-    can_delete = True  # ✅ Allows profile deletion when user is deleted
+    can_delete = True
     verbose_name_plural = 'Profile'
     fk_name = 'user'
 
 
-# ✅ Custom User admin with role column and full delete access
+# ✅ Hero Inline for linking Hero to User in admin (optional)
+class HeroInline(admin.StackedInline):
+    model = Hero
+    can_delete = True
+    verbose_name_plural = 'Hero Profile'
+    fk_name = 'user'
+
+
+# ✅ Custom User admin showing role + hero + profile
 class CustomUserAdmin(BaseUserAdmin):
-    inlines = (UserProfileInline,)
+    inlines = (UserProfileInline, HeroInline)
     list_display = ('username', 'email', 'first_name', 'last_name', 'get_role', 'is_staff')
     list_select_related = ('userprofile',)
 
@@ -27,7 +35,7 @@ class CustomUserAdmin(BaseUserAdmin):
         return super().get_queryset(request).select_related('userprofile')
 
 
-# 🔁 Replace default User admin with our custom version
+# 🔁 Replace the default User admin
 admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)
 
@@ -46,7 +54,7 @@ class MessageAdmin(admin.ModelAdmin):
 class HeroAdmin(admin.ModelAdmin):
     list_display = ("name", "category", "available", "power_level")
     list_filter = ("available", "category")
-    search_fields = ("name", "description")
+    search_fields = ("name", "description", "user__username")
     ordering = ("-power_level",)
 
 
@@ -58,17 +66,17 @@ class CategoryAdmin(admin.ModelAdmin):
     ordering = ("name",)
 
 
-# ✅ Hire Admin (deletion enabled)
+# ✅ Hire Admin
 @admin.register(Hire)
 class HireAdmin(admin.ModelAdmin):
     list_display = ("client", "hero", "mission_name", "date_hired")
     list_filter = ("hero", "date_hired")
     search_fields = ("client__username", "hero__name", "mission_name")
     ordering = ("-date_hired",)
-    actions = ['delete_selected']  # ✅ Allows bulk delete
+    actions = ['delete_selected']
 
 
-# ✅ UserProfile Admin (if accessed directly)
+# ✅ UserProfile Admin (for standalone access)
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ("user", "role")

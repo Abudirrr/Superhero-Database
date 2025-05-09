@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-x4+3489_%#z((6vcy_f(v%(kq(zgl%%6vd+6g9y&w3m5lep2_v"
 
 # ✅ Debug ON for development only — turn off in production!
-DEBUG = False
+DEBUG = True
 
 # ✅ Hosts allowed to connect
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
@@ -58,7 +58,7 @@ TEMPLATES = [
 # ✅ WSGI
 WSGI_APPLICATION = "hireahero.wsgi.application"
 
-# ✅ Database (SQLite)
+# ✅ Database (SQLite for dev)
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -80,19 +80,18 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-# ✅ Static files (CSS, JavaScript)
+# ✅ Static files (CSS, JavaScript, etc.)
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "main", "static")]
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
-# ✅ Media files (user uploads)
+# ✅ Media files (uploads like hero images)
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-# ✅ Default PK
+# ✅ Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# ✅ Authentication redirects
+# ✅ Login redirect & error handling
 LOGIN_URL = "/login/"
-
-# ✅ Custom CSRF error handler
 CSRF_FAILURE_VIEW = "main.views.error_views.custom_csrf_failure"

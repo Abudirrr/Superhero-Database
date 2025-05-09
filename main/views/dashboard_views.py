@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 
 from ..models import Hire, Message, UserProfile, Hero
-
+from ..forms import HeroUpdateForm  # ✅ Ensure this form is defined
 
 @login_required
 def dashboard(request):
@@ -44,7 +44,7 @@ def client_dashboard(request):
 @login_required
 def hero_dashboard(request):
     """
-    Dashboard for heroes to view their assignments.
+    Dashboard for heroes to view and update their profile including image.
     """
     if request.user.userprofile.role != 'hero':
         return HttpResponseForbidden("Access denied.")
@@ -55,7 +55,21 @@ def hero_dashboard(request):
         return HttpResponseForbidden("Hero profile not linked to this user.")
 
     assignments = Hire.objects.filter(hero=hero).order_by('-date_hired')
-    return render(request, "hero_dashboard.html", {"assignments": assignments})
+
+    if request.method == 'POST':
+        form = HeroUpdateForm(request.POST, request.FILES, instance=hero)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Hero profile updated successfully.")
+            return redirect('hero_dashboard')
+    else:
+        form = HeroUpdateForm(instance=hero)
+
+    return render(request, "hero_dashboard.html", {
+        "hero": hero,
+        "assignments": assignments,
+        "form": form
+    })
 
 
 @login_required

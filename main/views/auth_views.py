@@ -8,8 +8,7 @@ from django.contrib.auth.models import User
 from ..forms import RegistrationForm
 from ..models import UserProfile, Hero, Category
 
-
-# ✅ Register a new user (manual role assignment, Hero auto-create)
+# ✅ Register a new user (using signal to create profile)
 def register_user(request):
     """
     Registers a new user and directly creates their UserProfile with the chosen role.
@@ -32,9 +31,10 @@ def register_user(request):
                 messages.error(request, "Email already registered.")
                 return render(request, 'register.html', {'form': form})
 
-            # ✅ Create User and Profile
+            # ✅ Create User and assign role for signal
             user = User.objects.create_user(username=username, email=email, password=password)
-            UserProfile.objects.create(user=user, role=role)
+            user._created_role = role  # Let signal handle UserProfile creation
+            user.save()
 
             # 🦸 Create Hero if applicable
             if role == 'hero':
@@ -92,7 +92,6 @@ def login_user(request):
                 return redirect('support_dashboard')
             else:
                 return HttpResponseForbidden("Invalid role.")
-
         else:
             messages.error(request, "Invalid username or password.")
 

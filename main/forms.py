@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Hire, Message
+from .models import Hire, Message, Hero
 
 
 # ✅ Message Form
@@ -63,4 +63,18 @@ class ProfileForm(forms.ModelForm):
             "first_name": forms.TextInput(attrs={"placeholder": "First name", "class": "form-control"}),
             "last_name": forms.TextInput(attrs={"placeholder": "Last name", "class": "form-control"}),
             "email": forms.EmailInput(attrs={"placeholder": "Email", "class": "form-control"}),
+        }
+
+
+# ✅ Hero Update Form (with image support)
+class HeroUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Hero
+        fields = ['description', 'price', 'power_level', 'available', 'image']
+        widgets = {
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'price': forms.NumberInput(attrs={'class': 'form-control'}),
+            'power_level': forms.NumberInput(attrs={'class': 'form-control'}),
+            'available': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }

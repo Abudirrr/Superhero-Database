@@ -15,13 +15,43 @@
   <!-- ✅ Header -->
   {% include 'header.html' %}
 
-  <!-- ✅ Main Content -->
   <div class="container mt-5">
-    <div class="text-center mb-4">
+    <!-- ✅ Greeting -->
+    <div class="text-center mb-5">
       <h1 class="text-success fw-bold">Welcome, {{ user.username }}!</h1>
-      <p class="lead">🦸‍♂️ Your Hero Dashboard: View your active and past missions.</p>
+      <p class="lead">🦸 Your Hero Dashboard: View missions and update your hero profile.</p>
     </div>
 
+    <!-- ✅ Current Hero Info -->
+    <div class="row mb-5">
+      <div class="col-md-4 text-center">
+        {% if hero.image %}
+          <img src="{{ hero.image.url }}" class="img-fluid rounded shadow-sm" alt="Hero Image" style="max-height: 250px;">
+        {% else %}
+          <div class="alert alert-secondary">No image uploaded yet.</div>
+        {% endif %}
+      </div>
+      <div class="col-md-8">
+        <form method="POST" enctype="multipart/form-data" class="border p-4 bg-white shadow-sm rounded">
+          {% csrf_token %}
+          {% for field in form %}
+            <div class="mb-3">
+              <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+              {{ field }}
+              {% if field.errors %}
+                <div class="text-danger small">{{ field.errors|striptags }}</div>
+              {% endif %}
+            </div>
+          {% endfor %}
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary btn-lg"><i class="bi bi-save"></i> Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ✅ Mission Assignments -->
+    <h3 class="text-primary mb-3">Your Assignments</h3>
     {% if assignments %}
       <div class="table-responsive">
         <table class="table table-striped table-hover align-middle shadow-sm">

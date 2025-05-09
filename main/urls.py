@@ -1,4 +1,6 @@
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 
 # ✅ Authentication views
 from main.views.auth_views import login_user, logout_user, register_user
@@ -29,7 +31,7 @@ from main.views.static_views import about_page, contact_page, match_game
 
 urlpatterns = [
     # ========================
-    # Main Pages & Auth
+    # Main Pages & Authentication
     # ========================
     path("", home, name="home"),
     path("register/", register_user, name="register"),
@@ -37,7 +39,7 @@ urlpatterns = [
     path("logout/", logout_user, name="logout"),
 
     # ========================
-    # Dashboard Views
+    # Dashboards (Role-Based)
     # ========================
     path("dashboard/", dashboard, name="dashboard"),
     path("dashboard/client/", client_dashboard, name="client_dashboard"),
@@ -46,7 +48,7 @@ urlpatterns = [
     path("dashboard/support/delete/<int:message_id>/", delete_message, name="delete_message"),
 
     # ========================
-    # Hero Features
+    # Hero Features & Hiring
     # ========================
     path("hero/<int:hero_id>/", hero_detail, name="hero_detail"),
     path("hire/", hire_page, name="hire"),
@@ -54,22 +56,26 @@ urlpatterns = [
     path("recommendations/<int:hero_id>/", recommended_heroes, name="recommended_heroes"),
 
     # ========================
-    # Cart Functionality
+    # Shopping Cart
     # ========================
     path("cart/", view_cart, name="view_cart"),
     path("cart/add/<int:hero_id>/", add_to_cart, name="add_to_cart"),
     path("cart/remove/<int:item_id>/", remove_from_cart, name="remove_from_cart"),
 
     # ========================
-    # Profile & Ratings
+    # Profile Editing & Ratings
     # ========================
     path("edit-profile/", edit_profile, name="edit_profile"),
     path("rate/", rate_hero, name="rate_hero"),
 
     # ========================
-    # Static Pages
+    # Static Content & Extras
     # ========================
     path("game/", match_game, name="game"),
     path("about/", about_page, name="about"),
     path("contact/", contact_page, name="contact"),
 ]
+
+# ✅ Serve uploaded hero images in development mode
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

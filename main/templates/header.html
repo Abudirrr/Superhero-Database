@@ -1,5 +1,6 @@
 {% load static %}
 
+<!-- ✅ HEADER COMPONENT -->
 <header>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,15 +9,15 @@
   <meta name="author" content="Your Name" />
   <title>Superhero Database</title>
 
-  <!-- Bootstrap CSS + Icons -->
+  <!-- ✅ Bootstrap & Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
 
-  <!-- Custom CSS -->
+  <!-- ✅ Custom Styles -->
   <link rel="stylesheet" href="{% static 'css/style.css' %}" />
   <link rel="stylesheet" href="{% static 'styles.css' %}" />
 
-  <!-- jQuery -->
+  <!-- ✅ jQuery (if used) -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   <!-- ✅ Navbar -->
@@ -34,6 +35,8 @@
 
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
+
+          <!-- ✅ Always visible links -->
           <li class="nav-item"><a class="nav-link" href="{% url 'home' %}"><i class="bi bi-house"></i> Home</a></li>
           <li class="nav-item"><a class="nav-link" href="{% url 'hire' %}"><i class="bi bi-person-badge"></i> Hire</a></li>
           <li class="nav-item"><a class="nav-link" href="{% url 'game' %}"><i class="bi bi-lightning"></i> Game</a></li>
@@ -41,26 +44,31 @@
           <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}"><i class="bi bi-envelope"></i> Contact</a></li>
 
           {% if user.is_authenticated %}
+            <!-- ✅ User Dashboard -->
             <li class="nav-item"><a class="nav-link" href="{% url 'dashboard' %}"><i class="bi bi-speedometer"></i> Dashboard</a></li>
 
-            <!-- 🎯 Role-based extra dashboard links -->
-            {% if request.user.userprofile.role == 'Hero' %}
+            <!-- ✅ Role-based dashboards -->
+            {% if user.userprofile.role == 'hero' %}
               <li class="nav-item"><a class="nav-link" href="{% url 'hero_dashboard' %}"><i class="bi bi-person-square"></i> Hero Panel</a></li>
-            {% elif request.user.userprofile.role == 'Support' %}
+            {% elif user.userprofile.role == 'support' %}
               <li class="nav-item"><a class="nav-link" href="{% url 'support_dashboard' %}"><i class="bi bi-headset"></i> Support</a></li>
             {% endif %}
 
+            <!-- ✅ Personal links -->
             <li class="nav-item"><a class="nav-link" href="{% url 'edit_profile' %}"><i class="bi bi-pencil-square"></i> Edit Profile</a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'view_cart' %}"><i class="bi bi-cart4"></i> Cart</a></li>
-            <!-- Recommendation only if on hero detail -->
-            {% if request.resolver_match.url_name == 'hero_detail' %}
+
+            <!-- ✅ Conditional Recommendations Link (if on hero detail page) -->
+            {% if request.resolver_match.url_name == 'hero_detail' and hero %}
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'recommended_heroes' hero.id %}"><i class="bi bi-stars"></i> Recommendations</a>
               </li>
             {% endif %}
 
             <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+
           {% else %}
+            <!-- ✅ Guest Links -->
             <li class="nav-item"><a class="nav-link" href="{% url 'login' %}"><i class="bi bi-box-arrow-in-right"></i> Login</a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'register' %}"><i class="bi bi-person-plus"></i> Register</a></li>
           {% endif %}
