@@ -1,20 +1,22 @@
 from pathlib import Path
 import os
-import dj_database_url  # 👈 Only needed if you later switch from SQLite to PostgreSQL on Render
 
 # ✅ Base Directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# ✅ Security Key (you should override this in environment variables on Render)
+# ✅ Secret key (from environment for security)
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-x4+3489_%#z((6vcy_f(v%(kq(zgl%%6vd+6g9y&w3m5lep2_v")
 
-# ✅ Debug flag - always False in production
-DEBUG = os.getenv("DEBUG", "False") == "True"
+# ✅ Detect Render deployment
+RENDER = os.environ.get("RENDER", "") == "true"
 
-# ✅ Allowed hosts
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "superhero-database.onrender.com").split(",")
+# ✅ Debug mode (True locally, False on Render)
+DEBUG = not RENDER  # Optional: use env var if needed
 
-# ✅ Installed Apps
+# ✅ Allowed Hosts
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.onrender.com']
+
+# ✅ Installed Applications
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -22,23 +24,24 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "main.apps.MainConfig",  # ✅ Your main app
+    "main.apps.MainConfig",
 ]
 
 # ✅ Middleware
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # ✅ Serves static files in prod
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",  # ✅ Serve static files on Render
 ]
 
-# ✅ Root URL
+# ✅ Root URLs and WSGI
 ROOT_URLCONF = "hireahero.urls"
+WSGI_APPLICATION = "hireahero.wsgi.application"
 
 # ✅ Templates
 TEMPLATES = [
@@ -57,16 +60,13 @@ TEMPLATES = [
     },
 ]
 
-# ✅ WSGI application
-WSGI_APPLICATION = "hireahero.wsgi.application"
-
-# ✅ Database
+# ✅ SQLite Database (fine for development and Render demo)
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
     }
-    # For PostgreSQL on Render:
+    # To use PostgreSQL on Render:
     # "default": dj_database_url.config(conn_max_age=600)
 }
 
@@ -78,26 +78,27 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-# ✅ Internationalization
+# ✅ Localization
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-# ✅ Static & Media files
+# ✅ Static Files (CSS, JS)
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "main", "static")]
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
+# ✅ Media Files (user-uploaded images like hero photos)
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-# ✅ Default primary key
+# ✅ Primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# ✅ Auth redirect
+# ✅ Login Redirects
 LOGIN_URL = "/login/"
 
-# ✅ Custom error view
+# ✅ CSRF Custom Handler
 CSRF_FAILURE_VIEW = "main.views.error_views.custom_csrf_failure"
