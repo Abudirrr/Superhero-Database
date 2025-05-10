@@ -2,22 +2,22 @@ from pathlib import Path
 import os
 import dj_database_url
 
-# ✅ Base Directory
+# ✅ Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# ✅ Secret Key (override in production)
+# ✅ Secret key (override in Railway env)
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-x4+3489_%#z((6vcy_f(v%(kq(zgl%%6vd+6g9y&w3m5lep2_v")
 
-# ✅ Debug Mode ON for Development
-DEBUG = True
+# ✅ Debug mode
+DEBUG = os.getenv("DEBUG", "True").lower() == "true"
 
-# ✅ Allowed Hosts (add Railway hostname dynamically)
+# ✅ Allowed hosts
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 RAILWAY_HOSTNAME = os.getenv("RAILWAY_STATIC_URL")
 if RAILWAY_HOSTNAME:
     ALLOWED_HOSTS.append(RAILWAY_HOSTNAME.replace("https://", ""))
 
-# ✅ Installed Apps
+# ✅ Installed apps
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -40,7 +40,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-# ✅ Root URL & WSGI
+# ✅ URLs and WSGI
 ROOT_URLCONF = "hireahero.urls"
 WSGI_APPLICATION = "hireahero.wsgi.application"
 
@@ -61,7 +61,7 @@ TEMPLATES = [
     },
 ]
 
-# ✅ Database: PostgreSQL for Railway, SQLite for local
+# ✅ Databases (Railway Postgres or fallback to SQLite)
 if os.getenv("DATABASE_URL"):
     DATABASES = {
         "default": dj_database_url.config(
@@ -78,7 +78,7 @@ else:
         }
     }
 
-# ✅ Password Validation
+# ✅ Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -86,34 +86,34 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-# ✅ Localization
+# ✅ Internationalization
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-# ✅ Static Files
+# ✅ Static files
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "main", "static")]
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-# ✅ Media Files
+# ✅ Media files
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-# ✅ Default PK Field
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-# ✅ Auth Redirects
+# ✅ Auth redirects
 LOGIN_URL = "/login/"
 
-# ✅ CSRF / Session Settings
+# ✅ Security & CSRF
 CSRF_TRUSTED_ORIGINS = [
     "https://" + host for host in ALLOWED_HOSTS if "." in host
 ]
-CSRF_COOKIE_SECURE = False  # Set to True in production!
-SESSION_COOKIE_SECURE = False  # Set to True in production!
+CSRF_COOKIE_SECURE = not DEBUG
+SESSION_COOKIE_SECURE = not DEBUG
 
-# ✅ Optional custom CSRF handler
+# ✅ Default auto field
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# ✅ Custom CSRF handler (optional)
 CSRF_FAILURE_VIEW = "main.views.error_views.custom_csrf_failure"
