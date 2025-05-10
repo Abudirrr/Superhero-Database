@@ -7,22 +7,13 @@ pymysql.install_as_MySQLdb()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Secret key
-SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-x4+3489_%#z((6vcy_f(v%(kq(zgl%%6vd+6g9y&w3m5lep2_v")
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # Debug mode
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
-# Allowed hosts
-ALLOWED_HOSTS = []
-RAILWAY_PUBLIC_DOMAIN = os.getenv("RAILWAY_PUBLIC_DOMAIN")
-if RAILWAY_PUBLIC_DOMAIN:
-    ALLOWED_HOSTS.extend([
-        RAILWAY_PUBLIC_DOMAIN,
-        f"*.{RAILWAY_PUBLIC_DOMAIN}",
-        "*.railway.app"
-    ])
-if DEBUG:
-    ALLOWED_HOSTS.extend(["localhost", "127.0.0.1"])
+# Allowed hosts - explicitly defined only by env
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 # Installed apps
 INSTALLED_APPS = [
@@ -68,14 +59,14 @@ TEMPLATES = [
     },
 ]
 
-# ✅ MySQL Database Configuration
+# ✅ MySQL Database Configuration (No localhost fallback)
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": os.getenv("MYSQL_DATABASE", ""),
-        "USER": os.getenv("MYSQL_USER", ""),
-        "PASSWORD": os.getenv("MYSQL_PASSWORD", ""),
-        "HOST": os.getenv("MYSQL_HOST", ""),  # No localhost fallback
+        "NAME": os.getenv("MYSQL_DATABASE"),
+        "USER": os.getenv("MYSQL_USER"),
+        "PASSWORD": os.getenv("MYSQL_PASSWORD"),
+        "HOST": os.getenv("MYSQL_HOST"),
         "PORT": os.getenv("MYSQL_PORT", "3306"),
         "OPTIONS": {
             "ssl": {"ssl-mode": "REQUIRED"}
@@ -112,10 +103,10 @@ LOGIN_URL = "/login/"
 
 # CSRF + Security
 CSRF_TRUSTED_ORIGINS = [
-    f"https://{host}" for host in ALLOWED_HOSTS if not host.startswith("127.") and not host.startswith("localhost")
+    f"https://{host}" for host in ALLOWED_HOSTS if host
 ]
 if DEBUG:
-    CSRF_TRUSTED_ORIGINS.append("http://localhost")
+    CSRF_TRUSTED_ORIGINS.append("http://127.0.0.1")
 
 CSRF_COOKIE_SECURE = not DEBUG
 SESSION_COOKIE_SECURE = not DEBUG
