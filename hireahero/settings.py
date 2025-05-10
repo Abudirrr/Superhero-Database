@@ -13,7 +13,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-x4+3489_%#z((6vcy_f(v%(kq(
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
 # Allowed hosts
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+ALLOWED_HOSTS = []
 RAILWAY_PUBLIC_DOMAIN = os.getenv("RAILWAY_PUBLIC_DOMAIN")
 if RAILWAY_PUBLIC_DOMAIN:
     ALLOWED_HOSTS.extend([
@@ -21,6 +21,8 @@ if RAILWAY_PUBLIC_DOMAIN:
         f"*.{RAILWAY_PUBLIC_DOMAIN}",
         "*.railway.app"
     ])
+if DEBUG:
+    ALLOWED_HOSTS.extend(["localhost", "127.0.0.1"])
 
 # Installed apps
 INSTALLED_APPS = [
@@ -66,14 +68,14 @@ TEMPLATES = [
     },
 ]
 
-# ✅ MySQL Database Configuration (matches your .env)
+# ✅ MySQL Database Configuration
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
         "NAME": os.getenv("MYSQL_DATABASE", ""),
         "USER": os.getenv("MYSQL_USER", ""),
         "PASSWORD": os.getenv("MYSQL_PASSWORD", ""),
-        "HOST": os.getenv("MYSQL_HOST", ""),
+        "HOST": os.getenv("MYSQL_HOST", ""),  # No localhost fallback
         "PORT": os.getenv("MYSQL_PORT", "3306"),
         "OPTIONS": {
             "ssl": {"ssl-mode": "REQUIRED"}
@@ -110,7 +112,7 @@ LOGIN_URL = "/login/"
 
 # CSRF + Security
 CSRF_TRUSTED_ORIGINS = [
-    f"https://{host}" for host in ALLOWED_HOSTS if host not in ["localhost", "127.0.0.1"]
+    f"https://{host}" for host in ALLOWED_HOSTS if not host.startswith("127.") and not host.startswith("localhost")
 ]
 if DEBUG:
     CSRF_TRUSTED_ORIGINS.append("http://localhost")
