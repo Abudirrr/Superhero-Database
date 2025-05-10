@@ -1,6 +1,5 @@
 from pathlib import Path
 import os
-import dj_database_url
 
 # Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -65,16 +64,19 @@ TEMPLATES = [
     },
 ]
 
-# Database (Postgres or fallback to SQLite, with ssl_require only if needed)
-db_url = os.getenv("DATABASE_URL", f"sqlite:///{BASE_DIR / 'db.sqlite3'}")
-is_sqlite = db_url.startswith("sqlite")
-
+# ✅ MySQL Database Configuration
 DATABASES = {
-    "default": dj_database_url.parse(
-        db_url,
-        conn_max_age=600,
-        ssl_require=not DEBUG if not is_sqlite else False
-    )
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": os.getenv("MYSQL_DATABASE", "railway"),
+        "USER": os.getenv("MYSQL_USER", "root"),
+        "PASSWORD": os.getenv("MYSQL_PASSWORD", ""),
+        "HOST": os.getenv("MYSQL_HOST", "localhost"),
+        "PORT": os.getenv("MYSQL_PORT", "3306"),
+        "OPTIONS": {
+            "ssl": {"ssl-mode": "REQUIRED"}
+        }
+    }
 }
 
 # Password validation
