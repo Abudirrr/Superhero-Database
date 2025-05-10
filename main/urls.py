@@ -29,8 +29,8 @@ from main.views.rate_views import rate_hero
 # ✅ Static and extra pages
 from main.views.static_views import about_page, contact_page, match_game
 
-# ✅ Migration triggers
-from main.views.utils import trigger_migrations, force_migrations
+# ✅ Migration trigger view
+from main.views.utils import force_migrations
 
 urlpatterns = [
     # ========================
@@ -81,7 +81,6 @@ urlpatterns = [
     # ========================
     # Utilities
     # ========================
-    path("run-migrations/", trigger_migrations, name="run_migrations"),
     path("force-migrations/", force_migrations, name="force_migrations"),
 ]
 
