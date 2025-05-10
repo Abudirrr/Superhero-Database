@@ -12,8 +12,13 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # Debug mode
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
-# Allowed hosts - explicitly defined only by env
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
+# ✅ Hardcoded allowed hosts to prevent DisallowedHost errors
+ALLOWED_HOSTS = [
+    "hireahero-production.up.railway.app",
+    "*.railway.app"
+]
+if DEBUG:
+    ALLOWED_HOSTS.extend(["localhost", "127.0.0.1"])
 
 # Installed apps
 INSTALLED_APPS = [
@@ -103,7 +108,8 @@ LOGIN_URL = "/login/"
 
 # CSRF + Security
 CSRF_TRUSTED_ORIGINS = [
-    f"https://{host}" for host in ALLOWED_HOSTS if host
+    "https://hireahero-production.up.railway.app",
+    "https://*.railway.app"
 ]
 if DEBUG:
     CSRF_TRUSTED_ORIGINS.append("http://127.0.0.1")
