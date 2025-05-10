@@ -2,16 +2,16 @@ from pathlib import Path
 import os
 import dj_database_url
 
-# ✅ Base directory
+# Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# ✅ Secret key (override in production)
+# Secret key
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-x4+3489_%#z((6vcy_f(v%(kq(zgl%%6vd+6g9y&w3m5lep2_v")
 
-# ✅ Debug mode
+# Debug mode
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
-# ✅ Allowed hosts
+# Allowed hosts
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 RAILWAY_PUBLIC_DOMAIN = os.getenv("RAILWAY_PUBLIC_DOMAIN")
 if RAILWAY_PUBLIC_DOMAIN:
@@ -21,7 +21,7 @@ if RAILWAY_PUBLIC_DOMAIN:
         "*.railway.app"
     ])
 
-# ✅ Installed apps
+# Installed apps
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -32,7 +32,7 @@ INSTALLED_APPS = [
     "main.apps.MainConfig",
 ]
 
-# ✅ Middleware
+# Middleware
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -44,11 +44,11 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-# ✅ URL & WSGI
+# URLs and WSGI
 ROOT_URLCONF = "hireahero.urls"
 WSGI_APPLICATION = "hireahero.wsgi.application"
 
-# ✅ Templates
+# Templates
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -65,16 +65,19 @@ TEMPLATES = [
     },
 ]
 
-# ✅ Database (Postgres from env or fallback to SQLite)
+# Database (Postgres or fallback to SQLite, with ssl_require only if needed)
+db_url = os.getenv("DATABASE_URL", f"sqlite:///{BASE_DIR / 'db.sqlite3'}")
+is_sqlite = db_url.startswith("sqlite")
+
 DATABASES = {
-    "default": dj_database_url.config(
-        default=os.getenv("DATABASE_URL", f"sqlite:///{BASE_DIR / 'db.sqlite3'}"),
+    "default": dj_database_url.parse(
+        db_url,
         conn_max_age=600,
-        ssl_require=not DEBUG
+        ssl_require=not DEBUG if not is_sqlite else False
     )
 }
 
-# ✅ Password validation
+# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -82,26 +85,26 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-# ✅ Internationalization
+# Internationalization
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-# ✅ Static files (Render, Railway, etc.)
+# Static files
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "main", "static")]
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-# ✅ Media files
+# Media files
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-# ✅ Auth redirects
+# Auth redirects
 LOGIN_URL = "/login/"
 
-# ✅ CSRF + Security
+# CSRF + Security
 CSRF_TRUSTED_ORIGINS = [
     f"https://{host}" for host in ALLOWED_HOSTS if host not in ["localhost", "127.0.0.1"]
 ]
@@ -112,8 +115,8 @@ CSRF_COOKIE_SECURE = not DEBUG
 SESSION_COOKIE_SECURE = not DEBUG
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-# ✅ Default auto field
+# Default auto field
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# ✅ Custom CSRF failure view (optional)
+# CSRF failure handler (optional)
 CSRF_FAILURE_VIEW = "main.views.error_views.custom_csrf_failure"
