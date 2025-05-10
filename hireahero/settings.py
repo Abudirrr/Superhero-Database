@@ -3,7 +3,6 @@ import os
 import pymysql
 pymysql.install_as_MySQLdb()
 
-
 # Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -67,14 +66,14 @@ TEMPLATES = [
     },
 ]
 
-# ✅ MySQL Database Configuration
+# ✅ MySQL Database Configuration (matches your .env)
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": os.getenv("MYSQL_DATABASE", "railway"),
-        "USER": os.getenv("MYSQL_USER", "root"),
+        "NAME": os.getenv("MYSQL_DATABASE", ""),
+        "USER": os.getenv("MYSQL_USER", ""),
         "PASSWORD": os.getenv("MYSQL_PASSWORD", ""),
-        "HOST": os.getenv("MYSQL_HOST", "localhost"),
+        "HOST": os.getenv("MYSQL_HOST", ""),
         "PORT": os.getenv("MYSQL_PORT", "3306"),
         "OPTIONS": {
             "ssl": {"ssl-mode": "REQUIRED"}
