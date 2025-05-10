@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-x4+3489_%#z((6vcy_f(v%(kq(zgl%%6vd+6g9y&w3m5lep2_v")
 
 # ✅ Debug mode
-DEBUG = os.getenv("DEBUG", "False").lower() == "true"  # Safer default
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
 # ✅ Allowed hosts
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
@@ -17,8 +17,8 @@ RAILWAY_PUBLIC_DOMAIN = os.getenv("RAILWAY_PUBLIC_DOMAIN")
 if RAILWAY_PUBLIC_DOMAIN:
     ALLOWED_HOSTS.extend([
         RAILWAY_PUBLIC_DOMAIN,
-        f"*.{RAILWAY_PUBLIC_DOMAIN}",  # Allow subdomains
-        "*.railway.app"  # Railway's default domain
+        f"*.{RAILWAY_PUBLIC_DOMAIN}",
+        "*.railway.app"
     ])
 
 # ✅ Installed apps
@@ -44,7 +44,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-# ✅ URLs and WSGI
+# ✅ URL & WSGI
 ROOT_URLCONF = "hireahero.urls"
 WSGI_APPLICATION = "hireahero.wsgi.application"
 
@@ -65,12 +65,12 @@ TEMPLATES = [
     },
 ]
 
-# ✅ Databases (Railway Postgres or fallback to SQLite)
+# ✅ Database (Postgres from env or fallback to SQLite)
 DATABASES = {
     "default": dj_database_url.config(
         default=os.getenv("DATABASE_URL", f"sqlite:///{BASE_DIR / 'db.sqlite3'}"),
         conn_max_age=600,
-        ssl_require=not DEBUG  # Enforce SSL in production
+        ssl_require=not DEBUG
     )
 }
 
@@ -88,7 +88,7 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-# ✅ Static files
+# ✅ Static files (Render, Railway, etc.)
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "main", "static")]
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
@@ -101,7 +101,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 # ✅ Auth redirects
 LOGIN_URL = "/login/"
 
-# ✅ Security & CSRF
+# ✅ CSRF + Security
 CSRF_TRUSTED_ORIGINS = [
     f"https://{host}" for host in ALLOWED_HOSTS if host not in ["localhost", "127.0.0.1"]
 ]
@@ -110,10 +110,10 @@ if DEBUG:
 
 CSRF_COOKIE_SECURE = not DEBUG
 SESSION_COOKIE_SECURE = not DEBUG
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')  # For Railway proxy
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # ✅ Default auto field
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# ✅ Custom CSRF handler (optional)
+# ✅ Custom CSRF failure view (optional)
 CSRF_FAILURE_VIEW = "main.views.error_views.custom_csrf_failure"
