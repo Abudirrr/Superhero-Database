@@ -1,1 +1,1 @@
-web: bash -c "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn hireahero.wsgi:application"
+web: python manage.py migrate && python manage.py collectstatic --noinput && gunicorn hireahero.wsgi:application
