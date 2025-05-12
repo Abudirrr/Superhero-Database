@@ -3,16 +3,14 @@ import os
 import pymysql
 pymysql.install_as_MySQLdb()
 
-# Base directory
+# === Base directory ===
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Secret key
+# === Security settings ===
 SECRET_KEY = os.getenv("SECRET_KEY")
-
-# Debug mode
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
-# ✅ Hardcoded allowed hosts to prevent DisallowedHost errors
+# ✅ Allowed hosts for production and development
 ALLOWED_HOSTS = [
     "hireahero-production.up.railway.app",
     "*.railway.app"
@@ -20,7 +18,7 @@ ALLOWED_HOSTS = [
 if DEBUG:
     ALLOWED_HOSTS.extend(["localhost", "127.0.0.1"])
 
-# Installed apps
+# === Installed apps ===
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -31,7 +29,7 @@ INSTALLED_APPS = [
     "main.apps.MainConfig",
 ]
 
-# Middleware
+# === Middleware ===
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -43,11 +41,11 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-# URLs and WSGI
+# === URL and WSGI ===
 ROOT_URLCONF = "hireahero.urls"
 WSGI_APPLICATION = "hireahero.wsgi.application"
 
-# Templates
+# === Templates ===
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -64,7 +62,7 @@ TEMPLATES = [
     },
 ]
 
-# ✅ MySQL Database Configuration (No localhost fallback)
+# ✅ MySQL Database Configuration (uses Railway env vars)
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
@@ -79,7 +77,7 @@ DATABASES = {
     }
 }
 
-# Password validation
+# === Password validation ===
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -87,26 +85,26 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-# Internationalization
+# === Internationalization ===
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-# Static files
+# === Static files ===
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "main", "static")]
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-# Media files
+# === Media files ===
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-# Auth redirects
+# === Auth redirects ===
 LOGIN_URL = "/login/"
 
-# CSRF + Security
+# === CSRF / Security headers ===
 CSRF_TRUSTED_ORIGINS = [
     "https://hireahero-production.up.railway.app",
     "https://*.railway.app"
@@ -118,8 +116,8 @@ CSRF_COOKIE_SECURE = not DEBUG
 SESSION_COOKIE_SECURE = not DEBUG
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-# Default auto field
+# === Auto field setting ===
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# CSRF failure handler (optional)
+# === Optional CSRF failure view ===
 CSRF_FAILURE_VIEW = "main.views.error_views.custom_csrf_failure"
